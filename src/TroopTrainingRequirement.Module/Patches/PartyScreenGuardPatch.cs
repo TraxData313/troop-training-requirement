@@ -11,8 +11,8 @@ namespace TroopTrainingRequirement.Patches
     /// The party screen's single gate for upgrades: PartyScreenLogic.UpgradeTroop runs only when ValidateCommand says
     /// yes, and every upgrade button (single, x5, whole stack, the troop manager pop-up) ends there. Vanilla never asks
     /// the upgrade model there, so this postfix refuses an upgrade the rule blocks and shows the reason as a quick
-    /// message. Trainers come from the screen's pending roster. Step 3 disables the buttons up front; this stays as
-    /// the safety net.
+    /// message. Trainers come from the screen's pending roster. UpgradeButtonPatch disables the buttons up front, so
+    /// this is the safety net (other mods' commands, a stale button) and the message shouldn't show in normal play.
     /// </summary>
     internal static class PartyScreenGuardPatch
     {

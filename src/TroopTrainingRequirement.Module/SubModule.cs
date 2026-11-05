@@ -12,7 +12,7 @@ using TaleWorlds.MountAndBlade;
 namespace TroopTrainingRequirement
 {
     /// <summary>
-    /// Registers the PartyTroopUpgradeModel decorator (every campaign start) and the two enforcement patches (once per
+    /// Registers the PartyTroopUpgradeModel decorator (every campaign start) the enforcement patches and the party screen buttons (once per
     /// process, at the first campaign start, never at module load), plus the optional MCM page.
     /// </summary>
     public class SubModule : MBSubModuleBase
@@ -63,6 +63,7 @@ namespace TroopTrainingRequirement
             if (_patched) return;
             _patched = true;
             Patch("PartyScreenLogic.ValidateCommand postfix (party screen upgrades refused when the party can't train the target)", h => PartyScreenGuardPatch.Apply(h));
+            Patch("PartyCharacterVM.InitializeUpgrades / PartyVM.Update postfixes (party screen upgrade buttons disabled with the reason, orange)", h => UpgradeButtonPatch.Apply(h));
             Patch("PartyUpgraderCampaignBehavior.GetPossibleUpgradeTargets postfix (clan / AI automatic upgrades)", h => AutoUpgradePatch.Apply(h));
         }
 

@@ -1,0 +1,26 @@
+<Brushes>
+  <!-- Troop Training Requirement: the party screen's upgrade button when ONLY the training rule stops the upgrade
+       (enough XP, gold, horses, perks). A copy of vanilla's Party.UpgradeSlot.Button (SandBox\GUI\Brushes\PartyScreen.xml)
+       with the frame in orange #FFA028, so it reads as "your party can't train them yet" next to vanilla's grey
+       (not enough XP) and red (gold / horse / perk) looks. Applied by Patches\UpgradeButtonPatch. -->
+  <Brush Name="TroopTrainingRequirement.UpgradeSlot.ButtonBlocked">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="PartyScreen\troop_upgrade_button_default" Color="#FFA028FF" SaturationFactor="-150" />
+      <BrushLayer Name="Overlay" Sprite="BlankWhiteSquare_9" Color="#FFA028FF" AlphaFactor="0.2" ExtendTop="-5" ExtendBottom="-7" ExtendLeft="-5" ExtendRight="-5" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" ColorFactor="0.9" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" ColorFactor="1.2" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" ColorFactor="1.0" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" ColorFactor="0.6" />
+      </Style>
+    </Styles>
+  </Brush>
+</Brushes>

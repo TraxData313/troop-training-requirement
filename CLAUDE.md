@@ -5,8 +5,9 @@ what someone in the party can teach. Forces the player to level up, or bring a g
 already-trained troops (any tier, from towns / villages / prisoners) is unaffected.
 
 Sister mod of `..\item-skill-requirement-expanded` - same layout, tooling, code style and rules; when in doubt, do what
-it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Steps 1-2 done: the rule is enforced (model decorator + party screen guard +
-auto-upgrade filter) with an MCM page; the party screen hint / disabled button is step 3. Player docs: `README.md`.
+it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Steps 1-3 done: the rule is enforced (model decorator + party screen guard +
+auto-upgrade filter) with an MCM page, and the party screen's upgrade buttons are disabled with the reason in their
+hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `module\GUI\Brushes`). Step 4: encyclopedia. Player docs: `README.md`.
 
 ## Design (agreed with Toni, 2026-11-05)
 

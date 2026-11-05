@@ -39,7 +39,7 @@ from towns/villages/prisoners) is unaffected.
 1. [x] Scaffold (copy item-skill-requirement-expanded's layout: Core netstandard2.0 no game refs + Module net472 + xunit
    tests + tools\deploy.ps1/package.ps1 + CLAUDE.md + README + .gitignore + LICENSE Unlicense). Builds, empty mod deploys.
 2. [x] Rule: Core logic (pure, tested) + PartyTroopUpgradeModel decorator + trainers lookup + MCM settings.
-3. [ ] Party screen UI: disabled upgrade + reason hint (+ orange).
+3. [x] Party screen UI: disabled upgrade + reason hint (+ orange).
 4. [ ] Encyclopedia troop tree orange outline.
 5. [ ] Independent review, docs (README, store texts draft, thumbnail later after Toni's screenshots), deploy, commit,
    create PRIVATE GitHub repo TraxData313/troop-training-requirement and push. Do NOT publish anywhere.
@@ -47,8 +47,15 @@ from towns/villages/prisoners) is unaffected.
 ## Log
 - 2026-11-05 step 1 done: scaffold copied from item-skill-requirement-expanded (Core/Module/tests, tools, CLAUDE.md, README, Unlicense). Build 0/0, 1 test passes, AssemblyGuard OK, deployed to Modules\TroopTrainingRequirement.Dev. git init (main), no remote.
 - 2026-11-05 step 2 done: Core TrainingRule/TrainingSettings/SettingsMenu (+ clan tier bypass, 21 tests); module Training (trainers, party kinds), TrainingUpgradeModel decorator, PartyScreenGuardPatch, AutoUpgradePatch, McmSettings (4 groups, 15 settings). Build 0/0, AssemblyGuard OK, deployed. Not tested in game.
+- 2026-11-05 step 3 done: Patches\UpgradeButtonPatch - InitializeUpgrades postfix (blocked target -> IsInsufficient=true, AvailableUpgrades=0, reason lines appended to vanilla's hint, NumOfUpgradeableTroops/IsTroopUpgradable recomputed), PartyVM.Update postfix (hero moved / transfer all -> RefreshTroopsUpgradeable + UpdateTroopManagerPopUpCounts), orange via PartyUpgradeButtonWidget.UpdateVisual postfix keyed by the portrait ImageId (+ ImageIdentifierWidget.ImageId setter postfix for bind order), brush module\GUI\Brushes\TroopTrainingRequirement.xml. Core UpgradeButtonLook (+9 tests, 30 total). Build 0/0, AssemblyGuard OK, deployed. Not tested in game.
 
-## Notes for step 3 (party screen UI)
+## Notes for step 4 (encyclopedia troop tree)
+- Step 3 pattern to reuse: the VM decides, a widget postfix swaps the brush, keyed by something the widget already binds (there: the portrait ImageId = the target's character code). No UIExtenderEx.
+- Use Training.Check(PartyBase.MainParty, troop, target) (real member roster) in the encyclopedia - no pending roster there.
+- Vanilla has no separate "Upgrade all" button: the top "Upgrade" button opens the troop manager pop-up (PartyUpgradeTroopVM), whose per-troop buttons are the same UpgradeTargetVM / PartyUpgradeButtonWidget (covered); Ctrl/Shift-click (whole stack / 5) go through ExecuteUpgrade (covered). Troops blocked on every target land in the pop-up's disabled section; its open button is disabled when nothing is upgradable.
+- In-game checks for Toni (step 3): hover a blocked target (orange frame + tint, reason lines under vanilla's cost), move a companion out/in and watch the button flip, the Upgrade pop-up, no quick message in normal play; the log must show 'applied: PartyCharacterVM.InitializeUpgrades ...' and no ERROR lines.
+
+## Notes from step 2 (party screen internals)
 - Vanilla routes NOTHING but bandit troops through CanPartyUpgradeTroopToTarget: PartyCharacterVM.InitializeUpgrades (CVMC\...Party\PartyCharacterVM.cs ~1257) asks it only when Character.Culture.IsBandit, and PartyScreenLogic.ValidateCommand (UpgradeTroop branch, ~651) checks xp/gold/items only; PartyUpgraderCampaignBehavior.GetPossibleUpgradeTargets asks it only for Occupation.Bandit. Hence the two enforcement patches.
 - Enforcement now: PartyScreenGuardPatch (ValidateCommand postfix -> false + quick message with the reason; every button incl. troop manager pop-up goes through UpgradeTroop -> ValidateCommand) and AutoUpgradePatch (removes blocked targets from the auto-upgrade list; main party is skipped by vanilla there).
 - API: Training.Check(PartyBase party, TroopRoster roster, CharacterObject troop, CharacterObject target) -> TrainingCheck (Allowed, Shortfalls, ClanTierNeeded); Training.BlockReason(party, roster, troop, target) -> string or null; TrainingRule.ReasonLines/ReasonText. In the screen pass PartyScreenLogic.RightOwnerParty and MemberRosters[(int)PartyRosterSide.Right] (pending roster).
