@@ -19,7 +19,8 @@ stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, sect
 - Hook: a DECORATOR over the abstract `PartyTroopUpgradeModel` (forward every member to BaseModel; in
   `CanPartyUpgradeTroopToTarget`, and `IsTroopUpgradeable` if needed, additionally require the skill check).
 - Who: parties of the PLAYER's clan only (main party; companion-led clan parties use THEIR party's heroes - setting,
-  on). AI lords' parties: vanilla (setting "apply to AI", off).
+  on). AI lords' parties: vanilla (setting "apply to AI", off). Garrisons, militia, villagers, patrols and every
+  caravan / bandit party (hero-led too) are never covered (Core `PartyKinds.Classify`).
 - Settings (MCM, optional): enabled, each of the 8 skills (default all on), allowance, companion-led clan parties,
   AI parties, count the whole clan.
 - Party screen: when blocked, the upgrade button is disabled and its hint says why, vanilla style, every failing skill
