@@ -1,0 +1,68 @@
+[b]Better troops have to be taught.[/b]
+
+You can only upgrade a troop into a unit your party can teach. For each combat skill (One Handed, Two Handed, Polearm, Bow, Crossbow, Throwing, Riding, Athletics), the upgraded troop may not have more skill than the best of the heroes travelling with it: you and the companions in your party. Want veteran archers? Learn the bow, or bring someone who has.
+
+[b]Recruiting is never blocked.[/b] Trained troops from towns, villages, prisoners or anywhere else join at any tier, as in vanilla. The rule is only about turning your own recruits into better soldiers.
+
+[size=5][b]An example[/b][/size]
+You want to upgrade an Imperial Trained Archer into an [b]Imperial Veteran Archer[/b] (tier 4: Athletics 100, One Handed 100, Bow 100, lower in the rest). You have One Handed 120, Athletics 110, Bow 30; Cadan has Bow 64. One Handed and Athletics are fine, Bow is short, so the button is disabled and its tooltip says:
+[code]
+Requires Bow 100 - your best is 64 (Cadan)
+or reach clan tier 4
+[/code]
+Every short skill gets its own line. The troop keeps its upgrade XP until you can teach it.
+
+[size=5][b]Clan tier unlocks troops up to that tier[/b][/size]
+A target troop whose tier is at most your clan tier can always be upgraded to, whatever your skills. Clan tier 2 opens every tier 1 and 2 troop; clan tier 6 opens everything. A toggle, on by default.
+
+[size=5][b]Whose parties[/b][/size]
+[list]
+[*][b]Your party[/b]: party screen upgrades. Trainers are the heroes in your party right now, you included - move a companion out on the party screen and the buttons update at once.
+[*][b]Your clan's parties[/b] (led by a companion or family member): their automatic upgrades, with their own heroes as trainers. A blocked target is skipped; a troop with two targets takes the one its party can teach.
+[*][b]AI lords[/b]: vanilla by default (a toggle).
+[*][b]Always vanilla[/b]: garrisons, militia, villagers, caravans, patrols and bandits.
+[/list]
+
+[size=5][b]On screen[/b][/size]
+[list]
+[*][b]Party screen[/b]: a blocked upgrade button is disabled and [b]orange[/b], with the reason lines under vanilla's tooltip. When vanilla also stops it (XP, gold, horses), vanilla's look stays. Ctrl / Shift-click and the Upgrade pop-up follow the same rule.
+[*][b]Encyclopedia[/b]: on a unit page, the troop tree marks in orange the units your party can't upgrade into yet, with the same reasons in their tooltip.
+[/list]
+
+[size=5][b]Settings[/b][/size]
+With [url=https://www.nexusmods.com/mountandblade2bannerlord/mods/612]Mod Configuration Menu[/url] ([b]optional[/b]), under Mod Options > Troop Training Requirement: enabled (on), clan tier unlocks (on), allowance - the troop may exceed the best trainer by N points (0), each of the 8 skills (all on), your party (on), your clan's parties (on), AI lords' parties (off), count the whole clan as trainers (off). Changes apply at once. Without MCM the mod runs on these defaults.
+
+[size=5][b]Works very nicely with[/b][/size]
+[list]
+[*][b]Troop Equipment Upgrade[/b] and [b]Culture Equipment Seeder[/b]: the gear has to be bought and the skill has to be taught, so better troops are earned - a slower, more rewarding progression. The training check always comes first, so you never pay for gear of an upgrade that didn't happen. Load order doesn't matter.
+[*][b]Item Skill Requirement Expanded[/b], the sister mod: soft skill requirements on heroes' gear. Together your heroes' skills matter twice - for what they can wield and for who they can train.
+[/list]
+
+[size=5][b]Requirements[/b][/size]
+[list]
+[*][url=https://www.nexusmods.com/mountandblade2bannerlord/mods/2006]Harmony[/url] (required)
+[*][url=https://www.nexusmods.com/mountandblade2bannerlord/mods/612]Mod Configuration Menu[/url] (optional)
+[/list]
+
+[size=5][b]Install[/b][/size]
+[list]
+[*][b]Vortex:[/b] click Mod Manager Download and enable it.
+[*][b]Manual:[/b] extract the zip into [i]Mount & Blade II Bannerlord\Modules\[/i], so you get [i]Modules\TroopTrainingRequirement\SubModule.xml[/i]. Enable it in the launcher, below Harmony (and MCM if you use it).
+[/list]
+
+[size=5][b]Good to know[/b][/size]
+[list]
+[*]Game v1.4.8, singleplayer. Works with or without War Sails.
+[*]Safe to add or remove mid-campaign: nothing is saved into your campaign.
+[*]Only the 8 combat skills count, at the heroes' plain skill (no perk bonuses).
+[*]Mods that upgrade troops with their own code (not the party screen or the daily auto-upgrade) are not covered.
+[*]The reason text is English only for now.
+[*]Also on [url=https://github.com/TraxData313/troop-training-requirement/releases/latest]GitHub Releases[/url]. Same files.
+[/list]
+
+Bugs or a mod it fights with: tell me in the comments or on [url=https://github.com/TraxData313/troop-training-requirement/issues]GitHub[/url]. Every rule and setting in detail: [url=https://github.com/TraxData313/troop-training-requirement#readme]README[/url].
+
+Made by two of us: the code and all technical work by Claude (Opus 5.5), an AI; the idea, feedback and playtesting by [url=https://github.com/TraxData313]Trax[/url], Bible believer and engineer in AI/ML/Python/Applied Maths.
+
+Free and open — public domain (The Unlicense). Source: [url=https://github.com/TraxData313/troop-training-requirement]github.com/TraxData313/troop-training-requirement[/url]
+To thank me, open [url=https://github.com/TraxData313]my GitHub profile[/url] and read my top pinned.
