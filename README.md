@@ -14,6 +14,15 @@ Nothing is saved into your campaign: the mod can be removed at any time.
 - [Harmony](https://www.nexusmods.com/mountandblade2bannerlord/mods/2006)
 - [Mod Configuration Menu](https://www.nexusmods.com/mountandblade2bannerlord/mods/612) - optional, for the settings
 
+## Compatibility
+
+Compatible with [Troop Equipment Upgrade](https://steamcommunity.com/sharedfiles/filedetails/?id=3674824323), and
+works very nicely with it (and Culture Equipment Seeder): gear has to be bought and the skill has to be taught, so
+better troops are earned - a slower, more rewarding progression.
+
+The training check always comes first: an upgrade your party can't train is refused before Troop Equipment Upgrade
+reserves or buys any gear, so you never pay for an upgrade that didn't happen. Load order doesn't matter.
+
 ## License
 
 Public domain ([Unlicense](LICENSE)).

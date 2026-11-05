@@ -7,7 +7,8 @@ already-trained troops (any tier, from towns / villages / prisoners) is unaffect
 Sister mod of `..\item-skill-requirement-expanded` - same layout, tooling, code style and rules; when in doubt, do what
 it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Steps 1-3 done: the rule is enforced (model decorator + party screen guard +
 auto-upgrade filter) with an MCM page, and the party screen's upgrade buttons are disabled with the reason in their
-hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `module\GUI\Brushes`). Step 4: encyclopedia. Player docs: `README.md`.
+hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `module\GUI\Brushes`); blocked upgrades
+stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, section below). Step 4: encyclopedia. Player docs: `README.md`.
 
 ## Design (agreed with Toni, 2026-11-05)
 
@@ -30,6 +31,31 @@ hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `modul
   with 'or reach clan tier N'.
 - Upgrade XP keeps accumulating; nothing is saved into the campaign (removable mid-campaign).
 
+## Compatibility: Troop Equipment Upgrade
+
+Troop Equipment Upgrade v1.2.1 (Workshop 3674824323, Harmony id `troop.equipment.upgrade`, often with Culture
+Equipment Seeder) makes the player's party-screen upgrades take real gear. Decompiled 2026-11-05 (kept out of this
+repo). What it patches, all `PartyScreenLogic`, all via `PatchAll` at module load, default priority:
+- `UpgradeTroop` **prefix**: main party only; finds a gear variation in the party inventory (or, in its town "Equip
+  and upgrade troops" market mode, inventory + town market), adds it to a static `UpgradeSession.Pending` list,
+  prices market items, may lower `command.TotalNumber`; returns false ("Missing: ...") when no gear. `UpgradeTroop`
+  **postfix**: rewrites the "You will pay" text when `UpgradeSession.LastUpgradeSucceeded`.
+- `DoneLogic` prefix: takes the pending items (and the market gold). `Reset` / `OnPartyScreenClosed` postfixes clear.
+- Nothing else: no model, no UI state on the buttons, no AI / clan auto-upgrades (those stay ours: AutoUpgradePatch).
+  Culture Equipment Seeder only stocks markets and discounts prices; it never touches upgrades.
+
+The risk: vanilla `UpgradeTroop` calls `ValidateCommand` (our PartyScreenGuardPatch) INSIDE its body, so its prefix
+reserved the gear before our refusal, and Done then charged for an upgrade that never happened. Fix:
+`Patches\UpgradeGatePatch` - a prefix on `UpgradeTroop` with `Priority.First` + `HarmonyBefore("troop.equipment.upgrade")`
+(`Core\CompatOrder`); when the rule blocks it shows the reason and returns false, and Harmony 2 then skips the
+original AND every later prefix (proved on the game's 0Harmony 2.4.2: `tests\TroopTrainingRequirement.Compat.Tests`).
+Its postfix still runs, so the gate clears `UpgradeSession.LastUpgradeSucceeded` by reflection (fails soft, one log
+line). Order of patching / load order doesn't matter (priority sort). No dependency in SubModule.xml. In normal play
+the buttons are already disabled (UpgradeButtonPatch), so its path isn't even entered; the gate is the safety net.
+Button look: it adds no "not enough gear" state (it only says "Missing" on click), so ours is the only extra state
+and orange still means "only the rule stops this". Out of our scope: its prefix also runs before VANILLA's own
+ValidateCommand reasons (that mod's issue, unchanged by us).
+
 ## Layout
 
 - `src\TroopTrainingRequirement.Core` - netstandard2.0, **no game references**: the trainer rule (pure, unit-tested),
@@ -38,6 +64,7 @@ hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `modul
   `TroopTrainingRequirement`): `SubModule`, `ModLog`; later `Models\` (the decorator), `Patches\` (UI), `McmSettings`.
   Depends on `Bannerlord.Harmony` (not shipped); MCM referenced, never shipped.
 - `tests\TroopTrainingRequirement.Core.Tests` - xunit, net8.0.
+- `tests\TroopTrainingRequirement.Compat.Tests` - xunit, net472, on the game's 0Harmony.dll: Harmony ordering against other mods.
 - `module\` - SubModule.xml (+ `GUI\` / `ModuleData\` when needed; deploy.ps1 / package.ps1 copy them). Build output
   lands in `module\bin` (git-ignored).
 - Machine paths: `Directory.Build.props.user` (git-ignored) sets `GameFolder`, `HarmonyBinFolder` (falls back to
@@ -48,6 +75,7 @@ hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `modul
 ```
 dotnet build TroopTrainingRequirement.sln -c Release
 dotnet test tests\TroopTrainingRequirement.Core.Tests -c Release
+dotnet test tests\TroopTrainingRequirement.Compat.Tests -c Release   # needs the Bannerlord.Harmony module
 powershell -ExecutionPolicy Bypass -File tools\deploy.ps1     # builds + installs Modules\TroopTrainingRequirement.Dev, "Troop Training Requirement (dev)"
 powershell -ExecutionPolicy Bypass -File tools\package.ps1    # dist\TroopTrainingRequirement + zip (release identity)
 dotnet run --project ..\trax_combat_enhancements\tools\AssemblyGuard -c Release -- module\bin\Win64_Shipping_Client\TroopTrainingRequirement.dll MCMv5
