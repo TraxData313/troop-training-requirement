@@ -5,8 +5,8 @@ what someone in the party can teach. Forces the player to level up, or bring a g
 already-trained troops (any tier, from towns / villages / prisoners) is unaffected.
 
 Sister mod of `..\item-skill-requirement-expanded` - same layout, tooling, code style and rules; when in doubt, do what
-it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Step 1 (scaffold) done:
-the module loads and logs one line, nothing else yet. Player docs: `README.md`.
+it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Steps 1-2 done: the rule is enforced (model decorator + party screen guard +
+auto-upgrade filter) with an MCM page; the party screen hint / disabled button is step 3. Player docs: `README.md`.
 
 ## Design (agreed with Toni, 2026-11-05)
 
@@ -25,6 +25,8 @@ the module loads and logs one line, nothing else yet. Player docs: `README.md`.
   mod's brush approach, no UIExtenderEx if avoidable).
 - Encyclopedia troop tree: targets the current party couldn't train get an orange outline / tint, if feasible
   without heavy UI deps (else report and skip).
+- Clan tier bypass: a target whose tier <= the owner's clan tier is always allowed (setting, on); blocked reasons end
+  with 'or reach clan tier N'.
 - Upgrade XP keeps accumulating; nothing is saved into the campaign (removable mid-campaign).
 
 ## Layout

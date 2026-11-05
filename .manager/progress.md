@@ -28,11 +28,17 @@ from towns/villages/prisoners) is unaffected.
 - Encyclopedia troop tree (unit pages): targets the current party couldn't train get an orange outline/tint (if
   feasible without heavy UI deps; otherwise report and skip).
 - Upgrade XP keeps accumulating; nothing is saved into the campaign (removable mid-campaign).
+- Clan tier bypass (Toni, 2026-11-05): if the TARGET troop's tier <= the party owner's clan tier (player: Clan.PlayerClan.Tier),
+  the upgrade is allowed whatever the skills (MCM "Clan tier unlocks troops up to that tier", General group, default on).
+  When it is why a check passes, nothing is shown; when blocked, the reason ends with "or reach clan tier N" (N = target
+  tier, only when N <= 6 and the party has a clan).
+- Whose parties (step 2 decision): Main = the player's party; Clan = hero-led parties of the player's clan; AI = other
+  hero-led parties. Garrisons, militia, villagers, hero-less caravans / patrols and bandits are never covered.
 
 ## Steps
 1. [x] Scaffold (copy item-skill-requirement-expanded's layout: Core netstandard2.0 no game refs + Module net472 + xunit
    tests + tools\deploy.ps1/package.ps1 + CLAUDE.md + README + .gitignore + LICENSE Unlicense). Builds, empty mod deploys.
-2. [ ] Rule: Core logic (pure, tested) + PartyTroopUpgradeModel decorator + trainers lookup + MCM settings.
+2. [x] Rule: Core logic (pure, tested) + PartyTroopUpgradeModel decorator + trainers lookup + MCM settings.
 3. [ ] Party screen UI: disabled upgrade + reason hint (+ orange).
 4. [ ] Encyclopedia troop tree orange outline.
 5. [ ] Independent review, docs (README, store texts draft, thumbnail later after Toni's screenshots), deploy, commit,
@@ -40,3 +46,11 @@ from towns/villages/prisoners) is unaffected.
 
 ## Log
 - 2026-11-05 step 1 done: scaffold copied from item-skill-requirement-expanded (Core/Module/tests, tools, CLAUDE.md, README, Unlicense). Build 0/0, 1 test passes, AssemblyGuard OK, deployed to Modules\TroopTrainingRequirement.Dev. git init (main), no remote.
+- 2026-11-05 step 2 done: Core TrainingRule/TrainingSettings/SettingsMenu (+ clan tier bypass, 21 tests); module Training (trainers, party kinds), TrainingUpgradeModel decorator, PartyScreenGuardPatch, AutoUpgradePatch, McmSettings (4 groups, 15 settings). Build 0/0, AssemblyGuard OK, deployed. Not tested in game.
+
+## Notes for step 3 (party screen UI)
+- Vanilla routes NOTHING but bandit troops through CanPartyUpgradeTroopToTarget: PartyCharacterVM.InitializeUpgrades (CVMC\...Party\PartyCharacterVM.cs ~1257) asks it only when Character.Culture.IsBandit, and PartyScreenLogic.ValidateCommand (UpgradeTroop branch, ~651) checks xp/gold/items only; PartyUpgraderCampaignBehavior.GetPossibleUpgradeTargets asks it only for Occupation.Bandit. Hence the two enforcement patches.
+- Enforcement now: PartyScreenGuardPatch (ValidateCommand postfix -> false + quick message with the reason; every button incl. troop manager pop-up goes through UpgradeTroop -> ValidateCommand) and AutoUpgradePatch (removes blocked targets from the auto-upgrade list; main party is skipped by vanilla there).
+- API: Training.Check(PartyBase party, TroopRoster roster, CharacterObject troop, CharacterObject target) -> TrainingCheck (Allowed, Shortfalls, ClanTierNeeded); Training.BlockReason(party, roster, troop, target) -> string or null; TrainingRule.ReasonLines/ReasonText. In the screen pass PartyScreenLogic.RightOwnerParty and MemberRosters[(int)PartyRosterSide.Right] (pending roster).
+- Where vanilla builds the button: PartyCharacterVM.InitializeUpgrades computes per target flag (IsAvailable = level/xp ok and upgrades not disabled), flag2 (IsInsufficient = no items/gold, or bandit + !CanPartyUpgradeTroopToTarget), num (AvailableUpgrades), and upgradeHint = CampaignUIHelper.GetUpgradeHint(...) (CVMC\CampaignUIHelper.cs ~2316), then Upgrades[i].Refresh(num, flag, flag2, itemsOk, perksOk, hint, mariner). UpgradeTargetVM.ExecuteUpgrade needs IsAvailable && !IsInsufficient; hint via GetHint() -> _hintString. Simplest step 3: postfix InitializeUpgrades, for each blocked target call Upgrades[i].Refresh(0, flag, true, ..., hint + reason) or postfix GetUpgradeHint + set IsInsufficient; also NumOfUpgradeableTroops/IsTroopUpgradable (recompute after) and PartyUpgradeTroopVM (troop manager pop-up lists by NumOfReadyToUpgradeTroops).
+- Party kinds: Main = PartyBase.MainParty; Clan = hero-led MobileParty whose LeaderHero.Clan is the player clan; AI = other hero-led; Other (garrisons, militia, villagers, hero-less caravans/patrols, bandits) never covered.
