@@ -61,7 +61,7 @@ def wait_for_file(path: Path, timeout: float = 60.0) -> None:
 def main() -> None:
     missing = [s for s in (FIELD_SHOT, POPUP_SHOT) if not (SHOTS / s).is_file()]
     if missing:
-        raise SystemExit("Screenshots missing in docs\screenshots: " + ", ".join(missing)
+        raise SystemExit("Screenshots missing in docs/screenshots: " + ", ".join(missing)
                          + " - set FIELD_SHOT / POPUP_SHOT (and their boxes) to Toni's screenshots first.")
     WORK.mkdir(parents=True, exist_ok=True)
     field = cut(FIELD_SHOT, FIELD_BOX, (1024, 1024), "field.jpg")
