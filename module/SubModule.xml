@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Module xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/BUTR/Bannerlord.XmlSchemas/master/SubModule.xsd">
+  <!-- The RELEASE identity. tools\deploy.ps1 rewrites Id and Name for the local dev install
+       (Id TroopTrainingRequirement.Dev, "Troop Training Requirement (dev)"). Built against Bannerlord 1.4.8 (+ War Sails). -->
+  <Id value="TroopTrainingRequirement" />
+  <Name value="Troop Training Requirement" />
+  <Version value="v0.1.0" />
+  <DefaultModule value="false" />
+  <ModuleCategory value="Singleplayer" />
+  <ModuleType value="Community" />
+  <DependedModules>
+    <DependedModule Id="Bannerlord.Harmony" />
+    <DependedModule Id="Native" />
+    <DependedModule Id="SandBoxCore" />
+    <DependedModule Id="Sandbox" />
+  </DependedModules>
+  <DependedModuleMetadatas>
+    <DependedModuleMetadata id="Bannerlord.Harmony" order="LoadBeforeThis" />
+    <DependedModuleMetadata id="Native" order="LoadBeforeThis" />
+    <DependedModuleMetadata id="SandBoxCore" order="LoadBeforeThis" />
+    <DependedModuleMetadata id="Sandbox" order="LoadBeforeThis" />
+    <!-- Mod Configuration Menu: optional. Loaded before us so its settings page is ready at the main menu; without it
+         the mod runs on the default settings. -->
+    <DependedModuleMetadata id="Bannerlord.MBOptionScreen" order="LoadBeforeThis" optional="true" />
+    <!-- Optional, load-before only, so any model they register comes first and our decorator wraps it
+         (the decorator delegates to BaseModel, so either order works - this one is tidy). -->
+    <DependedModuleMetadata id="NavalDLC" order="LoadBeforeThis" optional="true" />
+    <DependedModuleMetadata id="ItemSkillRequirementExpanded" order="LoadBeforeThis" optional="true" />
+    <DependedModuleMetadata id="ItemSkillRequirementExpanded.Dev" order="LoadBeforeThis" optional="true" />
+  </DependedModuleMetadatas>
+  <SubModules>
+    <SubModule>
+      <Name value="Troop Training Requirement" />
+      <DLLName value="TroopTrainingRequirement.dll" />
+      <SubModuleClassType value="TroopTrainingRequirement.SubModule" />
+      <Tags />
+    </SubModule>
+  </SubModules>
+</Module>

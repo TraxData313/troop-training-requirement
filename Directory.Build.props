@@ -1,0 +1,18 @@
+<Project>
+  <PropertyGroup>
+    <LangVersion>10.0</LangVersion>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <!-- Path to the Bannerlord installation; override in Directory.Build.props.user (git-ignored) if yours differs -->
+    <GameFolder>D:\SteamLibrary\steamapps\common\Mount &amp; Blade II Bannerlord</GameFolder>
+    <!-- Bannerlord.Harmony (Steam Workshop 2859188632): referenced by the module (inventory patches), never shipped -
+         its module provides 0Harmony.dll. If this folder has no 0Harmony.dll the module csproj falls back to
+         $(GameFolder)\Modules\Bannerlord.Harmony. -->
+    <HarmonyBinFolder>D:\SteamLibrary\steamapps\workshop\content\261550\2859188632\bin\Win64_Shipping_Client</HarmonyBinFolder>
+    <!-- Mod Configuration Menu (MCM v5, module Bannerlord.MBOptionScreen): referenced by the module's settings page,
+         never shipped. Override in Directory.Build.props.user; without MCMv5.dll here the module csproj falls back to
+         $(GameFolder)\Modules\Bannerlord.MBOptionScreen. -->
+    <McmBinFolder>$(GameFolder)\Modules\Bannerlord.MBOptionScreen\bin\Win64_Shipping_Client</McmBinFolder>
+  </PropertyGroup>
+  <Import Project="Directory.Build.props.user" Condition="Exists('Directory.Build.props.user')" />
+</Project>
