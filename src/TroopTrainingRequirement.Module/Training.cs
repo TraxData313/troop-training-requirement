@@ -49,11 +49,15 @@ namespace TroopTrainingRequirement
         public static PartyKind Classify(PartyBase? party)
         {
             if (party == null) return PartyKind.Other;
-            if (party == PartyBase.MainParty) return PartyKind.MainParty;
-            if (party.MobileParty == null) return PartyKind.Other;
+            var mobile = party.MobileParty;
             var leader = party.LeaderHero;
-            if (leader == null) return PartyKind.Other;
-            return leader.Clan != null && leader.Clan == Clan.PlayerClan ? PartyKind.ClanParty : PartyKind.AiParty;
+            return PartyKinds.Classify(
+                isMainParty: party == PartyBase.MainParty,
+                isMobile: mobile != null,
+                hasLeaderHero: leader != null,
+                leaderInPlayerClan: leader?.Clan != null && leader.Clan == Clan.PlayerClan,
+                isCaravan: mobile != null && mobile.IsCaravan,
+                isBandit: mobile != null && mobile.IsBandit);
         }
 
         /// <summary>The upgrade check against the party's real member roster (campaign models, auto-upgrades).</summary>

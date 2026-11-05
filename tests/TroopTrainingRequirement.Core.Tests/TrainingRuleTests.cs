@@ -146,6 +146,22 @@ public class TrainingRuleTests
         Assert.Equal(applies, Defaults.AppliesTo(kind));
     }
 
+    [Theory]
+    //          main   mobile hero   player caravan bandit -> kind
+    [InlineData(true,  true,  true,  true,  false,  false, PartyKind.MainParty)]
+    [InlineData(false, true,  true,  true,  false,  false, PartyKind.ClanParty)]
+    [InlineData(false, true,  true,  false, false,  false, PartyKind.AiParty)]
+    [InlineData(false, true,  false, false, false,  false, PartyKind.Other)]  // garrison, militia, villagers, patrols
+    [InlineData(false, false, true,  true,  false,  false, PartyKind.Other)]  // a settlement's party
+    [InlineData(false, true,  true,  true,  true,   false, PartyKind.Other)]  // the player clan's companion-led caravan
+    [InlineData(false, true,  true,  false, true,   false, PartyKind.Other)]  // an AI clan's caravan
+    [InlineData(false, true,  true,  false, false,  true,  PartyKind.Other)]  // a hero-led bandit party
+    public void PartyKindsCoverOnlyHeroLedNonCaravanNonBanditParties(bool main, bool mobile, bool hero, bool player,
+        bool caravan, bool bandit, PartyKind expected)
+    {
+        Assert.Equal(expected, PartyKinds.Classify(main, mobile, hero, player, caravan, bandit));
+    }
+
     [Fact]
     public void ScopeFollowsSettingsAndMasterSwitch()
     {

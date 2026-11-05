@@ -122,10 +122,10 @@ namespace TroopTrainingRequirement.Core
                 "The rule applies to your own party (party screen upgrades). Default on.",
                 s => s.ApplyToMainParty, (s, v) => s.ApplyToMainParty = v));
             list.Add(Flag(Who, nameof(TrainingSettings.ApplyToClanParties), "Your clan's parties",
-                "The rule applies to parties led by companions and family of your clan (their automatic upgrades); each uses its own heroes as trainers. Default on.",
+                "The rule applies to parties led by companions and family of your clan (their automatic upgrades); each uses its own heroes as trainers. Caravans stay vanilla. Default on.",
                 s => s.ApplyToClanParties, (s, v) => s.ApplyToClanParties = v));
             list.Add(Flag(Who, nameof(TrainingSettings.ApplyToAiParties), "AI lords' parties",
-                "The rule also applies to every other hero-led party (their automatic upgrades). Garrisons, militia, caravans without a hero and bandits stay vanilla. Default off.",
+                "The rule also applies to every other hero-led party (their automatic upgrades). Garrisons, militia, villagers, caravans and bandits always stay vanilla. Default off.",
                 s => s.ApplyToAiParties, (s, v) => s.ApplyToAiParties = v));
 
             list.Add(Flag(Trainers, nameof(TrainingSettings.CountWholeClan), "Count the whole clan",

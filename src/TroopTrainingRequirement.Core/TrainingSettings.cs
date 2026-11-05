@@ -119,7 +119,8 @@ namespace TroopTrainingRequirement.Core
     /// <summary>Who a party belongs to, for the "whose parties" settings.</summary>
     public enum PartyKind
     {
-        /// <summary>Not covered: garrisons, militia, villagers, bandits, patrols - anything without a leading hero.</summary>
+        /// <summary>Not covered: garrisons, militia, villagers, patrols - anything without a leading hero - and every
+        /// caravan and bandit party, hero-led or not.</summary>
         Other,
 
         /// <summary>The player's own party.</summary>
@@ -130,5 +131,26 @@ namespace TroopTrainingRequirement.Core
 
         /// <summary>A hero-led party of any other clan.</summary>
         AiParty,
+    }
+}
+
+namespace TroopTrainingRequirement.Core
+{
+    /// <summary>Sorting a party into a <see cref="PartyKind"/> from what the game says about it (pure, tested).</summary>
+    public static class PartyKinds
+    {
+        /// <param name="isMainParty">It is the player's own party.</param>
+        /// <param name="isMobile">It is a mobile party (not a settlement's).</param>
+        /// <param name="hasLeaderHero">A hero leads it.</param>
+        /// <param name="leaderInPlayerClan">That hero belongs to the player's clan.</param>
+        /// <param name="isCaravan">It is a caravan (companion-led ones too): caravans stay vanilla.</param>
+        /// <param name="isBandit">It is a bandit party: bandits stay vanilla.</param>
+        public static PartyKind Classify(bool isMainParty, bool isMobile, bool hasLeaderHero, bool leaderInPlayerClan,
+            bool isCaravan, bool isBandit)
+        {
+            if (isMainParty) return PartyKind.MainParty;
+            if (!isMobile || !hasLeaderHero || isCaravan || isBandit) return PartyKind.Other;
+            return leaderInPlayerClan ? PartyKind.ClanParty : PartyKind.AiParty;
+        }
     }
 }
