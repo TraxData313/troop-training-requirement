@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using HarmonyLib;
 using TroopTrainingRequirement.Core;
 using TaleWorlds.CampaignSystem.Party;
@@ -50,6 +51,14 @@ namespace TroopTrainingRequirement.Patches
 
         /// <summary>Upgrade buttons seen on screen, to re-pick their brush when only our verdict changed.</summary>
         private static readonly List<WeakReference<PartyUpgradeButtonWidget>> Live = new List<WeakReference<PartyUpgradeButtonWidget>>();
+
+        /// <summary>The widgets already in <see cref="Live"/> (O(1) check: UpdateVisual runs on every flag set of every button).</summary>
+        private static readonly ConditionalWeakTable<PartyUpgradeButtonWidget, object> Tracked = new ConditionalWeakTable<PartyUpgradeButtonWidget, object>();
+
+        private static readonly object Mark = new object();
+
+        /// <summary>Live is pruned of collected widgets when it reaches this size (then doubles from what's left).</summary>
+        private static int _pruneAt = 256;
 
         private static bool _brushMissingLogged;
 
@@ -178,17 +187,20 @@ namespace TroopTrainingRequirement.Patches
             if (_updateVisual == null) return;
             for (int i = Live.Count - 1; i >= 0; i--)
             {
-                if (!Live[i].TryGetTarget(out var w) || w == null || w.ParentWidget == null) { Live.RemoveAt(i); continue; }
+                if (!Live[i].TryGetTarget(out var w) || w == null) { Live.RemoveAt(i); continue; }
+                if (w.ParentWidget == null) { Live.RemoveAt(i); Tracked.Remove(w); continue; } // re-tracked if it comes back
                 if (w.ImageIdentifierWidget?.ImageId == id) _updateVisual(w);
             }
         }
 
         private static void Track(PartyUpgradeButtonWidget widget)
         {
-            for (int i = Live.Count - 1; i >= 0; i--)
+            if (Tracked.TryGetValue(widget, out _)) return;
+            Tracked.Add(widget, Mark);
+            if (Live.Count >= _pruneAt)
             {
-                if (!Live[i].TryGetTarget(out var w) || w == null) { Live.RemoveAt(i); continue; }
-                if (ReferenceEquals(w, widget)) return;
+                Live.RemoveAll(r => !r.TryGetTarget(out var w) || w == null);
+                _pruneAt = Math.Max(256, Live.Count * 2);
             }
             Live.Add(new WeakReference<PartyUpgradeButtonWidget>(widget));
         }
