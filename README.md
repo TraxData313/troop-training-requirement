@@ -7,6 +7,10 @@ You can only upgrade a troop into a unit whose combat skills someone in the part
 best value among you and the companions travelling with you. Want elite archers? Learn the bow, or bring someone who
 has. Recruiting already-trained troops is unaffected.
 
+On the party screen a blocked upgrade button is disabled (orange frame) and its tooltip says why, e.g. "Requires
+Bow 120 - your best is 64 (Cadan)". In the encyclopedia, a unit's troop tree marks in orange the units your party
+can't upgrade into yet, with the same reasons in their tooltip.
+
 Nothing is saved into your campaign: the mod can be removed at any time.
 
 ## Requirements

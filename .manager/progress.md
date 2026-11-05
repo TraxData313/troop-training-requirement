@@ -40,7 +40,7 @@ from towns/villages/prisoners) is unaffected.
    tests + tools\deploy.ps1/package.ps1 + CLAUDE.md + README + .gitignore + LICENSE Unlicense). Builds, empty mod deploys.
 2. [x] Rule: Core logic (pure, tested) + PartyTroopUpgradeModel decorator + trainers lookup + MCM settings.
 3. [x] Party screen UI: disabled upgrade + reason hint (+ orange).
-4. [ ] Encyclopedia troop tree orange outline.
+4. [x] Encyclopedia troop tree orange outline.
 5. [ ] Independent review, docs (README, store texts draft, thumbnail later after Toni's screenshots), deploy, commit,
    create PRIVATE GitHub repo TraxData313/troop-training-requirement and push. Do NOT publish anywhere.
 
@@ -49,6 +49,24 @@ from towns/villages/prisoners) is unaffected.
 - 2026-11-05 step 2 done: Core TrainingRule/TrainingSettings/SettingsMenu (+ clan tier bypass, 21 tests); module Training (trainers, party kinds), TrainingUpgradeModel decorator, PartyScreenGuardPatch, AutoUpgradePatch, McmSettings (4 groups, 15 settings). Build 0/0, AssemblyGuard OK, deployed. Not tested in game.
 - 2026-11-05 step 3 done: Patches\UpgradeButtonPatch - InitializeUpgrades postfix (blocked target -> IsInsufficient=true, AvailableUpgrades=0, reason lines appended to vanilla's hint, NumOfUpgradeableTroops/IsTroopUpgradable recomputed), PartyVM.Update postfix (hero moved / transfer all -> RefreshTroopsUpgradeable + UpdateTroopManagerPopUpCounts), orange via PartyUpgradeButtonWidget.UpdateVisual postfix keyed by the portrait ImageId (+ ImageIdentifierWidget.ImageId setter postfix for bind order), brush module\GUI\Brushes\TroopTrainingRequirement.xml. Core UpgradeButtonLook (+9 tests, 30 total). Build 0/0, AssemblyGuard OK, deployed. Not tested in game.
 - 2026-11-05 compat step (Troop Equipment Upgrade v1.2.1, Workshop 3674824323): decompiled (scratchpad, not in repo). It prefixes PartyScreenLogic.UpgradeTroop (reserves gear in a static UpgradeSession, prices market gear) and charges at DoneLogic; vanilla UpgradeTroop calls ValidateCommand (our guard) only INSIDE its body, so a blocked upgrade reaching UpgradeTroop got its gear reserved and charged at Done. Fix: Patches\UpgradeGatePatch - UpgradeTroop prefix, Priority.First + HarmonyBefore("troop.equipment.upgrade") (Core\CompatOrder); blocked -> quick message + return false (Harmony 2.4.2 skips the original and all later prefixes) + clears its UpgradeSession.LastUpgradeSucceeded by reflection (its gold-text postfix still runs). New tests\TroopTrainingRequirement.Compat.Tests (net472, game's 0Harmony.dll, 4 tests) prove the order either patch order. CLAUDE.md "Compatibility: Troop Equipment Upgrade", README compatibility section. Build 0/0, 34 tests pass, AssemblyGuard OK. Not tested in game; Nexus page for that mod not found reliably (not linked).
+- 2026-11-05 step 4 done: Patches\EncyclopediaTreePatch - EncyclopediaUnitPageVM ctor postfix (every unit page open) walks the tree, Training.Check(PartyBase.MainParty, parent, child) per edge (real roster, MCM + clan tier bypass via Training); blocked units keyed by portrait character code + CharacterObject. EncyclopediaUnitTreeNodeItemBrushWidget.OnLateUpdate postfix (per node, once per page via a generation counter in a ConditionalWeakTable) swaps the node button's brush to TroopTrainingRequirement.Encyclopedia.ElementBlocked (copy of Encyclopedia.SubPage.Element, frame #FFA028) and tints the portrait; undone if the verdict changes. Tooltip: EncyclopediaUnitVM.ExecuteBeginHint/EndHint prefixes mark the hovered blocked unit, TooltipRefresherCollection.RefreshCharacterTooltip postfix appends a blank line + orange reason lines for that unit only. No prefab change, no UIExtenderEx. Build 0/0, 34 tests pass, AssemblyGuard OK, deployed. Not tested in game.
+
+## Notes for step 5 (review)
+All Harmony patches (applied in SubModule.ApplyCampaignPatches at the first campaign start, each in its own try/catch):
+- PartyScreenGuardPatch: PartyScreenLogic.ValidateCommand postfix (refuse + quick message).
+- UpgradeGatePatch: PartyScreenLogic.UpgradeTroop prefix, Priority.First + HarmonyBefore troop.equipment.upgrade (+ reflection on TEU's UpgradeSession.LastUpgradeSucceeded).
+- UpgradeButtonPatch: PartyCharacterVM.InitializeUpgrades postfix, PartyVM.Update postfix, PartyUpgradeButtonWidget.UpdateVisual postfix, ImageIdentifierWidget.ImageId setter postfix (ALL image widgets - hot path, cheap type check).
+- AutoUpgradePatch: PartyUpgraderCampaignBehavior.GetPossibleUpgradeTargets postfix.
+- EncyclopediaTreePatch: EncyclopediaUnitPageVM ctor postfix, EncyclopediaUnitTreeNodeItemBrushWidget.OnLateUpdate postfix (every frame per tree node; early-outs on the generation check, but does two FindChild calls first), EncyclopediaUnitVM.ExecuteBeginHint/ExecuteEndHint prefixes, TooltipRefresherCollection.RefreshCharacterTooltip postfix (shared by every CharacterObject tooltip in the game; gated by the hovered unit).
+- Model: TrainingUpgradeModel decorator (not Harmony).
+Risky spots to review:
+- Orange keyed by character code strings (party screen and encyclopedia): two different troops with identical codes would share a verdict (unlikely). Static sets are never cleared on game end except via the next page/screen.
+- Encyclopedia _hovered: if HoverEnd never fires (page closed mid-hover), a later tooltip for the SAME CharacterObject elsewhere could show the reasons until the next unit page opens (the lines are still true for the main party).
+- Encyclopedia verdict is computed once at page open (Toni: refresh when the page opens); changes while the page is open (MCM toggle) show on the next page.
+- The tree checks every parent->child edge; a target reachable from two parents uses the last edge's reasons (skill reasons depend only on the target).
+- Brush swap on the node ButtonWidget assumes the prefab layout ButtonContainer -> first child ButtonWidget -> ElementImage; a mod that replaces EncyclopediaUnitTreeNodeItem.xml silently gets no orange frame (no error).
+- Not tested in game at all yet (steps 2-4).
+In-game checks for Toni (step 4): open a unit page (e.g. a culture's recruit), blocked targets have an orange frame + tinted portrait, allowed ones are vanilla; hover a blocked one -> vanilla tooltip + orange lines "Requires Bow 120 - your best is 64 (Cadan)" / "or reach clan tier 5"; turn the mod off in MCM and reopen the page -> all vanilla. Log: 'applied: EncyclopediaUnitPageVM..ctor ...' and no ERROR lines.
 
 ## Notes for step 4 (encyclopedia troop tree)
 - Troop Equipment Upgrade adds no encyclopedia or button UI; nothing to coordinate there. Log at campaign start should show 'compat: Troop Equipment Upgrade found ...' and the UpgradeTroop prefix list with ours (800) before troop.equipment.upgrade (400).

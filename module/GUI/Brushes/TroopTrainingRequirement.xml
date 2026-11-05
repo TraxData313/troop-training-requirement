@@ -23,4 +23,31 @@
       </Style>
     </Styles>
   </Brush>
+  <!-- The encyclopedia unit page's troop tree: a unit the player's main party can't upgrade into right now (training
+       rule). A copy of vanilla's Encyclopedia.SubPage.Element (SandBox\GUI\Brushes\Encyclopedia.xml) with the frame in
+       orange #FFA028 (the portrait itself is tinted in code). Applied by Patches\EncyclopediaTreePatch. -->
+  <Brush Name="TroopTrainingRequirement.Encyclopedia.ElementBlocked">
+    <Layers>
+      <BrushLayer Name="Default" Sprite="Encyclopedia\subpage_notable_portrait" />
+      <BrushLayer Name="Frame" ExtendLeft="11" ExtendRight="12" ExtendTop="12" ExtendBottom="12" Sprite="subpage_slick_frame_9" Color="#FFA028FF" />
+    </Layers>
+    <Styles>
+      <Style Name="Default">
+        <BrushLayer Name="Default" AlphaFactor="0.7" />
+        <BrushLayer Name="Frame" />
+      </Style>
+      <Style Name="Hovered">
+        <BrushLayer Name="Default" AlphaFactor="1.5" />
+        <BrushLayer Name="Frame" />
+      </Style>
+      <Style Name="Pressed">
+        <BrushLayer Name="Default" AlphaFactor="0.6" />
+        <BrushLayer Name="Frame" />
+      </Style>
+      <Style Name="Disabled">
+        <BrushLayer Name="Default" AlphaFactor="0.4" />
+        <BrushLayer Name="Frame" />
+      </Style>
+    </Styles>
+  </Brush>
 </Brushes>
