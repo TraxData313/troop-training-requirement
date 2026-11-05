@@ -63,6 +63,7 @@ namespace TroopTrainingRequirement
             if (_patched) return;
             _patched = true;
             Patch("PartyScreenLogic.ValidateCommand postfix (party screen upgrades refused when the party can't train the target)", h => PartyScreenGuardPatch.Apply(h));
+            Patch("PartyScreenLogic.UpgradeTroop prefix, Priority.First (blocked upgrades stop before any other mod's prefix, e.g. Troop Equipment Upgrade's gear reservation)", h => UpgradeGatePatch.Apply(h));
             Patch("PartyCharacterVM.InitializeUpgrades / PartyVM.Update postfixes (party screen upgrade buttons disabled with the reason, orange)", h => UpgradeButtonPatch.Apply(h));
             Patch("PartyUpgraderCampaignBehavior.GetPossibleUpgradeTargets postfix (clan / AI automatic upgrades)", h => AutoUpgradePatch.Apply(h));
         }
