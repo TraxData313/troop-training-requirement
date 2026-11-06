@@ -7,7 +7,7 @@
              The short description here is replaced by tools\STEAM-DESCRIPTION.bbcode on the first update.
              docs\thumbnail.jpg does not exist yet: it waits for Toni's screenshots (tools\make_thumbnail.py). -->
         <ModuleFolder Value="C:\Users\Asus ROG\Documents\BannerlordMods\troop-training-requirement\dist\TroopTrainingRequirement"/>
-        <ItemDescription Value="Better troops have to be taught: a troop can only be upgraded into a unit whose combat skills someone in your party can teach (you or a companion). Clan tier unlocks troops up to that tier. Recruiting is never blocked. Orange disabled buttons with the reason on the party screen and in the encyclopedia. Requires Harmony; MCM optional."/>
+        <ItemDescription Value="Troops rise only as high as their teachers: a troop can only be upgraded into a unit whose combat skills someone in your party can teach (you or a companion). Clan tier unlocks troops up to that tier. Recruiting is never blocked. Orange disabled buttons with the reason on the party screen and in the encyclopedia. Requires Harmony; MCM optional."/>
         <Tags>
             <Tag Value="Utility" />
             <Tag Value="Native" />

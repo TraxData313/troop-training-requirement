@@ -16,7 +16,7 @@ uploads from this account go hidden "awaiting approval" - see `MODS-STATUS.md`, 
 
 ## Before either upload
 
-1. Pick the release version in `module\SubModule.xml` (`<Version value="v0.1.0" />` today).
+1. Pick the release version in `module\SubModule.xml` (`<Version value="v1.0.0" />` today).
 2. Package and refresh the thumbnail if the screenshots changed:
 
 ```powershell
