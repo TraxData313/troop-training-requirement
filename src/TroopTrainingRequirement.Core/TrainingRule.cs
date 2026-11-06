@@ -4,33 +4,51 @@ using System.Linq;
 
 namespace TroopTrainingRequirement.Core
 {
-    /// <summary>One possible teacher: a hero's name and his raw value in each <see cref="CombatSkill"/> (indexed by the enum).</summary>
+    /// <summary>One possible teacher: a hero's name, his raw value in each <see cref="CombatSkill"/> (indexed by the
+    /// enum) and his culture's StringId (for the same culture bonus; null = none).</summary>
     public sealed class Trainer
     {
-        public Trainer(string name, IReadOnlyList<int> skills)
+        public Trainer(string name, IReadOnlyList<int> skills, string? cultureId = null)
         {
             Name = name ?? "";
             Skills = skills ?? throw new ArgumentNullException(nameof(skills));
+            CultureId = cultureId;
         }
 
         public string Name { get; }
+
+        /// <summary>The hero's culture StringId, or null.</summary>
+        public string? CultureId { get; }
         public IReadOnlyList<int> Skills { get; }
 
         public int Skill(CombatSkill skill) => (int)skill < Skills.Count ? Skills[(int)skill] : 0;
     }
 
     /// <summary>One skill the party can't teach: the troop needs <see cref="Required"/> from a trainer
-    /// (its own skill minus the allowance), the best trainer has <see cref="Best"/>.</summary>
+    /// (its own skill minus the allowance), the best trainer has <see cref="Best"/> (with his same culture bonus).</summary>
     public sealed class Shortfall
     {
-        public Shortfall(CombatSkill skill, int troopSkill, int required, int best, string? bestTrainer)
+        public Shortfall(CombatSkill skill, int troopSkill, int required, int best, string? bestTrainer,
+            int bestRaw = -1, int bonus = 0, string? bonusCulture = null)
         {
             Skill = skill;
             TroopSkill = troopSkill;
             Required = required;
             Best = best;
             BestTrainer = bestTrainer;
+            BestRaw = bestRaw < 0 ? best : bestRaw;
+            Bonus = bonus;
+            BonusCulture = bonusCulture;
         }
+
+        /// <summary>The best trainer's own (raw) skill value.</summary>
+        public int BestRaw { get; }
+
+        /// <summary>His same culture bonus as shown (<see cref="Best"/> - <see cref="BestRaw"/>); 0 when none.</summary>
+        public int Bonus { get; }
+
+        /// <summary>The culture adjective of the bonus ("Battanian"), or null.</summary>
+        public string? BonusCulture { get; }
 
         public CombatSkill Skill { get; }
 
@@ -40,7 +58,8 @@ namespace TroopTrainingRequirement.Core
         /// <summary>The skill a trainer needs: troop skill minus the allowance.</summary>
         public int Required { get; }
 
-        /// <summary>The best trainer's value (0 when there are no trainers).</summary>
+        /// <summary>The best trainer's value as it counts (with his same culture bonus), rounded down - so it is always
+        /// below <see cref="Required"/> here (0 when there are no trainers).</summary>
         public int Best { get; }
 
         /// <summary>The best trainer's name; null when there are no trainers.</summary>
@@ -87,8 +106,11 @@ namespace TroopTrainingRequirement.Core
         /// <param name="targetTier">The target troop's tier.</param>
         /// <param name="trainers">The heroes who can teach (may be empty).</param>
         /// <param name="clanTier">The party owner's clan tier (negative = no clan, the bypass never applies).</param>
+        /// <param name="targetCultureId">The target troop's culture StringId: trainers of that culture count with the
+        /// same culture bonus (<see cref="CultureBonus"/>). Null = no bonus for anyone.</param>
+        /// <param name="targetCultureName">The culture's display name (reason line fallback when no adjective is known).</param>
         public static TrainingCheck Check(IReadOnlyList<int> targetSkills, int targetTier, IReadOnlyList<Trainer> trainers,
-            int clanTier, TrainingSettings settings)
+            int clanTier, TrainingSettings settings, string? targetCultureId = null, string? targetCultureName = null)
         {
             if (targetSkills == null) throw new ArgumentNullException(nameof(targetSkills));
             if (settings == null) throw new ArgumentNullException(nameof(settings));
@@ -108,15 +130,24 @@ namespace TroopTrainingRequirement.Core
                 int required = Math.Max(0, troop - allowance);
                 if (required <= 0) continue;
 
+                // The best trainer is the best AFTER each one's own same culture bonus (doubles, no rounding).
                 Trainer? best = null;
+                double bestValue = 0;
                 foreach (var t in trainers)
                 {
                     if (t == null) continue;
-                    if (best == null || t.Skill(skill) > best.Skill(skill)) best = t;
+                    double v = CultureBonus.Effective(t.Skill(skill), CultureBonus.Matches(targetCultureId, t.CultureId), settings);
+                    if (best == null || v > bestValue)
+                    {
+                        best = t;
+                        bestValue = v;
+                    }
                 }
-                int bestValue = best?.Skill(skill) ?? 0;
-                if (bestValue >= required) continue;
-                shortfalls.Add(new Shortfall(skill, troop, required, bestValue, best?.Name));
+                if (best != null && bestValue >= required) continue;
+                int raw = best?.Skill(skill) ?? 0;
+                int bonus = best == null ? 0 : CultureBonus.ShownBonus(raw, bestValue);
+                shortfalls.Add(new Shortfall(skill, troop, required, best == null ? 0 : CultureBonus.Shown(bestValue), best?.Name,
+                    raw, bonus, bonus > 0 ? CultureBonus.Adjective(targetCultureId, targetCultureName) : null));
             }
 
             if (shortfalls.Count == 0) return new TrainingCheck(true, false, shortfalls, null);
@@ -124,8 +155,9 @@ namespace TroopTrainingRequirement.Core
             return new TrainingCheck(false, false, shortfalls, tierNeeded);
         }
 
-        /// <summary>One line per failing skill, e.g. "Requires Athletics 120 - your best is 110 (Cadan)", then
-        /// "or reach clan tier 5" when that would unlock it. Empty when allowed.</summary>
+        /// <summary>One line per failing skill, e.g. "Requires Athletics 120 - your best is 110 (Cadan)" or, with the
+        /// same culture bonus, "Requires Bow 220 - your best is 219 (Cadan, +40 Battanian)", then "or reach clan tier 5"
+        /// when that would unlock it. Empty when allowed.</summary>
         public static IReadOnlyList<string> ReasonLines(TrainingCheck check)
         {
             if (check == null || check.Allowed) return Array.Empty<string>();
@@ -142,7 +174,13 @@ namespace TroopTrainingRequirement.Core
             string head = "Requires " + CombatSkills.DisplayName(s.Skill) + " " + s.Required;
             return s.BestTrainer == null
                 ? head + " - no one in the party can teach it"
-                : head + " - your best is " + s.Best + " (" + s.BestTrainer + ")";
+                : head + " - your best is " + s.Best + " (" + s.BestTrainer + BonusText(s) + ")";
+        }
+
+        private static string BonusText(Shortfall s)
+        {
+            if (s.Bonus <= 0) return "";
+            return ", +" + s.Bonus + (string.IsNullOrWhiteSpace(s.BonusCulture) ? "" : " " + s.BonusCulture);
         }
     }
 }

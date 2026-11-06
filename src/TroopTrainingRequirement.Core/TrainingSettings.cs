@@ -51,6 +51,18 @@ namespace TroopTrainingRequirement.Core
         /// <summary>The target troop may exceed the best trainer by this many points in each skill.</summary>
         public int Allowance { get; set; }
 
+        // ---- Same culture bonus (v1.1.0, Toni 2026-11-06; CultureBonus) ----
+
+        /// <summary>A trainer's skill counts boosted for a target troop of his own culture:
+        /// skill x <see cref="SameCultureBonusMultiplier"/> + <see cref="SameCultureBonusPoints"/>.</summary>
+        public bool SameCultureBonusEnabled { get; set; } = true;
+
+        /// <summary>Points added to the trainer's skill for same culture troops (after the multiplier).</summary>
+        public int SameCultureBonusPoints { get; set; } = 5;
+
+        /// <summary>Multiplier on the trainer's skill for same culture troops (1 = none).</summary>
+        public float SameCultureBonusMultiplier { get; set; } = 1.2f;
+
         // ---- Skills that count (all on by default) ----
 
         public bool CountOneHanded { get; set; } = true;

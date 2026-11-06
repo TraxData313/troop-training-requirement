@@ -63,7 +63,7 @@ namespace TroopTrainingRequirement
             var defaults = new TrainingSettings();
             var changed = SettingsMenu.All
                 .Where(s => Math.Abs(s.Get(settings) - s.Get(defaults)) > 1e-6)
-                .Select(s => s.Id + "=" + s.Get(settings).ToString("0", System.Globalization.CultureInfo.InvariantCulture))
+                .Select(s => s.Id + "=" + s.Get(settings).ToString("0.###", System.Globalization.CultureInfo.InvariantCulture))
                 .ToList();
             return changed.Count == 0 ? "all defaults" : string.Join(", ", changed);
         }
@@ -100,6 +100,9 @@ namespace TroopTrainingRequirement
                     var p = new PropertyFiller(s, order++);
                     if (s.Kind == MenuKind.Bool)
                         g.AddBool(s.Id, s.Label, new MCM.Common.ProxyRef<bool>(p.GetBool, p.SetBool), (Action<object>)p.Configure);
+                    else if (s.Kind == MenuKind.Float)
+                        g.AddFloatingInteger(s.Id, s.Label, (float)s.Min, (float)s.Max,
+                            new MCM.Common.ProxyRef<float>(p.GetFloat, p.SetFloat), (Action<object>)p.Configure);
                     else
                         g.AddInteger(s.Id, s.Label, (int)s.Min, (int)s.Max,
                             new MCM.Common.ProxyRef<int>(p.GetInt, p.SetInt), (Action<object>)p.Configure);
@@ -121,9 +124,11 @@ namespace TroopTrainingRequirement
 
             public bool GetBool() => _s.Get(Training.Settings) != 0;
             public int GetInt() => (int)Math.Round(_s.Get(Training.Settings));
+            public float GetFloat() => (float)_s.Get(Training.Settings);
 
             public void SetBool(bool value) => Set(value ? 1 : 0);
             public void SetInt(int value) => Set(value);
+            public void SetFloat(float value) => Set(value);
 
             private void Set(double value)
             {
@@ -131,7 +136,7 @@ namespace TroopTrainingRequirement
                 {
                     double before = _s.Get(Training.Settings);
                     if (!_s.Set(Training.Settings, value)) return;
-                    ModLog.Info("settings", _s.Id + ": " + before + " -> " + _s.Get(Training.Settings) + " (MCM)");
+                    ModLog.Info("settings", _s.Id + ": " + Text(before) + " -> " + Text(_s.Get(Training.Settings)) + " (MCM)");
                 }
                 catch (Exception e)
                 {
@@ -139,12 +144,20 @@ namespace TroopTrainingRequirement
                 }
             }
 
+            private static string Text(double v) => v.ToString("0.###", System.Globalization.CultureInfo.InvariantCulture);
+
             public void Configure(object propertyBuilder)
             {
                 if (_s.Kind == MenuKind.Bool)
                 {
                     ((MCM.Abstractions.FluentBuilder.Models.ISettingsPropertyBoolBuilder)propertyBuilder)
                         .SetOrder(_order).SetRequireRestart(false).SetHintText(_s.Hint);
+                }
+                else if (_s.Kind == MenuKind.Float)
+                {
+                    var f = (MCM.Abstractions.FluentBuilder.Models.ISettingsPropertyFloatingIntegerBuilder)propertyBuilder;
+                    f.SetOrder(_order).SetRequireRestart(false).SetHintText(_s.Hint);
+                    f.AddValueFormat("0.00");
                 }
                 else
                 {

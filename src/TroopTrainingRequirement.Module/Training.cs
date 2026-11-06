@@ -76,7 +76,10 @@ namespace TroopTrainingRequirement
                 if (target == null || target.IsHero || (troop != null && troop.IsHero)) return TrainingCheck.Free;
                 if (!Settings.AppliesTo(Classify(party))) return TrainingCheck.Free;
                 var clan = ClanOf(party!);
-                return TrainingRule.Check(SkillsOf(target), target.Tier, TrainersOf(roster, clan), clan?.Tier ?? -1, Settings);
+                // Same culture bonus: trainers of the TARGET troop's culture count boosted (Core CultureBonus).
+                var culture = target.Culture;
+                return TrainingRule.Check(SkillsOf(target), target.Tier, TrainersOf(roster, clan), clan?.Tier ?? -1, Settings,
+                    culture?.StringId, culture?.Name?.ToString());
             }
             catch (Exception e)
             {
@@ -85,8 +88,9 @@ namespace TroopTrainingRequirement
             }
         }
 
-        /// <summary>The blocking reason ("Requires Athletics 120 - your best is 110 (Cadan)", one line per skill),
-        /// or null when the upgrade is allowed.</summary>
+        /// <summary>The blocking reason ("Requires Athletics 120 - your best is 110 (Cadan)", or with the same culture
+        /// bonus "Requires Bow 220 - your best is 219 (Cadan, +40 Battanian)", one line per skill), or null when the
+        /// upgrade is allowed.</summary>
         public static string? BlockReason(PartyBase? party, TroopRoster? roster, CharacterObject? troop, CharacterObject? target)
         {
             var check = Check(party, roster, troop, target);
@@ -133,7 +137,7 @@ namespace TroopTrainingRequirement
             var values = new int[CombatSkills.Count];
             for (int i = 0; i < values.Length; i++)
                 values[i] = hero.GetSkillValue(Skill((CombatSkill)i));
-            trainers.Add(new Trainer(hero.Name?.ToString() ?? "?", values));
+            trainers.Add(new Trainer(hero.Name?.ToString() ?? "?", values, hero.Culture?.StringId));
         }
     }
 }

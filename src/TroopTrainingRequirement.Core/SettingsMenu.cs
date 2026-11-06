@@ -12,6 +12,9 @@ namespace TroopTrainingRequirement.Core
 
         /// <summary>A whole-number slider.</summary>
         Int,
+
+        /// <summary>A decimal slider (the value as stored, shown with 2 decimals).</summary>
+        Float,
     }
 
     /// <summary>One group (section) of the menu page, in page order.</summary>
@@ -68,7 +71,8 @@ namespace TroopTrainingRequirement.Core
         {
             if (double.IsNaN(value)) return false;
             if (Kind == MenuKind.Bool) value = value != 0 ? 1 : 0;
-            else value = Math.Round(Math.Max(Min, Math.Min(Max, value)), MidpointRounding.AwayFromZero);
+            else value = Math.Max(Min, Math.Min(Max, value));
+            if (Kind == MenuKind.Int) value = Math.Round(value, MidpointRounding.AwayFromZero);
             double before = _get(settings);
             _set(settings, value);
             return Math.Abs(_get(settings) - before) > 1e-6;
@@ -86,11 +90,12 @@ namespace TroopTrainingRequirement.Core
         public const string FolderName = "TroopTrainingRequirement";
 
         public static readonly MenuGroup General = new MenuGroup("General", 0);
-        public static readonly MenuGroup Skills = new MenuGroup("Skills that count", 1);
-        public static readonly MenuGroup Who = new MenuGroup("Whose parties", 2);
-        public static readonly MenuGroup Trainers = new MenuGroup("Trainers", 3);
+        public static readonly MenuGroup Culture = new MenuGroup("Same culture bonus", 1);
+        public static readonly MenuGroup Skills = new MenuGroup("Skills that count", 2);
+        public static readonly MenuGroup Who = new MenuGroup("Whose parties", 3);
+        public static readonly MenuGroup Trainers = new MenuGroup("Trainers", 4);
 
-        public static IReadOnlyList<MenuGroup> Groups { get; } = new[] { General, Skills, Who, Trainers };
+        public static IReadOnlyList<MenuGroup> Groups { get; } = new[] { General, Culture, Skills, Who, Trainers };
 
         public static IReadOnlyList<MenuSetting> All { get; } = Build();
 
@@ -108,6 +113,17 @@ namespace TroopTrainingRequirement.Core
                     "The target troop may exceed the best trainer by this many points in each skill. Default 0.",
                     MenuKind.Int, 0, 100, s => s.Allowance, (s, v) => s.Allowance = (int)v),
             };
+
+            list.Add(Flag(Culture, nameof(TrainingSettings.SameCultureBonusEnabled), "Same culture bonus",
+                "A hero teaches his own people's troops better: for a target troop of the trainer's culture (a Battanian companion training Fian Champions) his skill counts as skill x multiplier + points. Troops or heroes with no culture or the neutral culture get nothing. The reason line shows it ('Cadan, +40 Battanian'). Default on.",
+                s => s.SameCultureBonusEnabled, (s, v) => s.SameCultureBonusEnabled = v));
+            list.Add(new MenuSetting(nameof(TrainingSettings.SameCultureBonusPoints), "Same culture bonus (+points)", Culture,
+                "Points added to the trainer's skill for troops of his culture, after the multiplier. Default 5.",
+                MenuKind.Int, 0, 50, s => s.SameCultureBonusPoints, (s, v) => s.SameCultureBonusPoints = (int)v));
+            list.Add(new MenuSetting(nameof(TrainingSettings.SameCultureBonusMultiplier), "Same culture bonus (x multiplier)", Culture,
+                "Multiplier on the trainer's skill for troops of his culture (steps of 0.05; 1.00 = none). With 1.20 and +5, a Battanian with Bow 180 can train a Fian Champion (Bow 220). Default 1.20.",
+                MenuKind.Float, 1, 2, s => Math.Round(s.SameCultureBonusMultiplier, 4),
+                (s, v) => s.SameCultureBonusMultiplier = (float)(Math.Round(v * 20.0, MidpointRounding.AwayFromZero) / 20.0)));
 
             for (int i = 0; i < CombatSkills.Count; i++)
             {
