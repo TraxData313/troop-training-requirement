@@ -8,7 +8,7 @@ Sister mod of `..\item-skill-requirement-expanded` - same layout, tooling, code 
 it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Steps 1-4 done: the rule is enforced (model decorator + party screen guard +
 auto-upgrade filter) with an MCM page, and the party screen's upgrade buttons are disabled with the reason in their
 hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `module\GUI\Brushes`); blocked upgrades
-stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, section below). Encyclopedia troop tree: units the main party can't train get an orange frame + reasons in the tooltip (`Patches\EncyclopediaTreePatch`). Step 5 (review, docs, store text drafts in `tools\`) done; nothing uploaded, not yet tested in game. Player docs: `README.md`.
+stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, section below). Encyclopedia troop tree: units the main party can't train get an orange frame + reasons in the tooltip (`Patches\EncyclopediaTreePatch`). Step 5 (review, docs, store text drafts in `tools\`) done; v1.0.0 published (Nexus / Steam); v1.1.0 same culture bonus done 2026-11-06. Player docs: `README.md`.
 
 ## Design (agreed with Toni, 2026-11-05)
 
@@ -22,12 +22,21 @@ stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, sect
   on). AI lords' parties: vanilla (setting "apply to AI", off). Garrisons, militia, villagers, patrols and every
   caravan / bandit party (hero-led too) are never covered (Core `PartyKinds.Classify`).
 - Settings (MCM, optional): enabled, each of the 8 skills (default all on), allowance, companion-led clan parties,
-  AI parties, count the whole clan.
+  AI parties, count the whole clan, same culture bonus (on, +5, x1.2).
 - Party screen: when blocked, the upgrade button is disabled and its hint says why, vanilla style, every failing skill
   listed, e.g. "Requires Athletics 120 - your best is 110 (Cadan)". Orange #FFA028 where a colour is used (the sister
   mod's brush approach, no UIExtenderEx if avoidable).
 - Encyclopedia troop tree: targets the current party couldn't train get an orange outline / tint, if feasible
   without heavy UI deps (else report and skip).
+- Same culture bonus (v1.1.0, Toni 2026-11-06; Core `CultureBonus`, the sister mod's rule): per trainer, when the
+  TARGET troop's culture (`CharacterObject.Culture.StringId`) equals the trainer hero's culture (`Hero.Culture`), his
+  skill counts as `skill x SameCultureBonusMultiplier (1.2) + SameCultureBonusPoints (5)` (toggle
+  `SameCultureBonusEnabled`; none / `neutral_culture` never; not gated on IsMainCulture - Nords aren't main), rounded
+  to 4 decimals. Best trainer = max of the boosted values; compare `effective >= required` as doubles; shown numbers
+  ROUNDED DOWN (`CultureBonus.Shown`). Fian Champion Bow 220 -> raw 180 (179 -> 219.8). Reason: "Requires Bow 220 -
+  your best is 219 (Cadan, +40 Battanian)". Party screen, auto-upgrades and encyclopedia all go through
+  `Training.Check`, so they agree. MCM group "Same culture bonus" (order 1; `MenuKind.Float` for the multiplier,
+  snapped to 0.05). Nothing cached (the encyclopedia recomputes on page open).
 - Clan tier bypass: a target whose tier <= the owner's clan tier is always allowed (setting, on); blocked reasons end
   with 'or reach clan tier N'.
 - Upgrade XP keeps accumulating; nothing is saved into the campaign (removable mid-campaign).

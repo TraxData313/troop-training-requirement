@@ -48,6 +48,22 @@ or reach clan tier 4
 Every short skill gets its own line. Train your bow, hire a better archer as a companion, or reach clan tier 4, and
 the button works again. The troop keeps all its upgrade XP in the meantime.
 
+## Same culture bonus
+
+Since v1.1.0 a hero teaches his own people's troops better. When the target troop's culture is the trainer's culture,
+that trainer's skill counts as **skill x 1.2 + 5** for the check; the best trainer is the best after each one's
+bonus. Troops or heroes with no culture, or the game's neutral culture, get nothing.
+
+Example: a **Battanian Fian Champion** asks Bow 220 (and Two Handed 220, Athletics 170). A Battanian companion can
+train it from Bow **180** (180 x 1.2 + 5 = 221); at Bow 179 (219.8) he is still just short, and the tooltip says so:
+
+```
+Requires Bow 220 - your best is 219 (Cadan, +40 Battanian)
+```
+
+The number shown is rounded down, so it never reads 220 next to "Requires 220". The points, the multiplier and an
+on/off switch are settings. The clan tier unlock below is unchanged.
+
 ## Clan tier unlocks troops up to that tier
 
 A target troop whose tier is **at most your clan tier** can always be upgraded to, whatever your skills. Clan tier 2:
@@ -87,6 +103,9 @@ Mod Options > Troop Training Requirement. Changes apply at once. Without MCM the
 | General | Enabled | on |
 | General | Clan tier unlocks troops up to that tier | on |
 | General | Allowance (the troop may exceed the best trainer by this many points, 0-100) | 0 |
+| Same culture bonus | Same culture bonus (on/off) | on |
+| Same culture bonus | Same culture bonus (+points), 0-50 | 5 |
+| Same culture bonus | Same culture bonus (x multiplier), 1.00-2.00 in steps of 0.05 | 1.20 |
 | Skills that count | One Handed, Two Handed, Polearm, Bow, Crossbow, Throwing, Riding, Athletics (one toggle each) | all on |
 | Whose parties | Your party | on |
 | Whose parties | Your clan's parties | on |

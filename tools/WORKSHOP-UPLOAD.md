@@ -9,7 +9,7 @@ Same uploader and quirks as the sister mod (`..\item-skill-requirement-expanded\
 
 ## Before either upload
 
-1. Pick the release version in `module\SubModule.xml` (`<Version value="v1.0.0" />` today).
+1. Pick the release version in `module\SubModule.xml` (`<Version value="v1.1.0" />` today).
 2. Package and refresh the thumbnail if the screenshots changed:
 
 ```powershell
