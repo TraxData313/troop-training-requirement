@@ -28,8 +28,8 @@ WORK = REPO / "tools" / "build"
 OUT = REPO / "docs" / "thumbnail.jpg"
 STEAM_LIMIT = 1024 * 1024
 
-FIELD_SHOT, FIELD_BOX = "PARTY_SCREEN_SHOT.jpg", (1000, 0, 2440, 1440)   # TODO(screenshots): square crop, the party screen
-POPUP_SHOT, POPUP_BOX = "TOOLTIP_SHOT.jpg", (1880, 348, 2672, 939)       # TODO(screenshots): keep the .popup aspect (820x612)
+FIELD_SHOT, FIELD_BOX = "02-encyclopedia-tree-orange.jpg", (1496, 241, 2683, 1428)  # square: the troop tree, orange frames
+POPUP_SHOT, POPUP_BOX = "05-encyclopedia-fian-champion.jpg", (1316, 576, 2145, 1195)  # Fian Champion tooltip + its orange branch (820x612 aspect)
 POPUP_SIZE = (820, 612)
 
 BROWSERS = [
