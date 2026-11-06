@@ -4,7 +4,7 @@ Published 2026-11-06: Steam item **[3834547205](https://steamcommunity.com/share
 Steam block, like the other mods since 2026-10-10 - see bannerlord-mods `MODS-STATUS.md`), Nexus
 [mods/14536](https://www.nexusmods.com/mountandblade2bannerlord/mods/14536), GitHub repo public with release v1.0.0.
 
-Same uploader and quirks as the sister mod (`..\item-skill-requirement-expanded	ools\WORKSHOP-UPLOAD.md`): Bannerlord's own
+Same uploader and quirks as the sister mod (`..\item-skill-requirement-expanded\tools\WORKSHOP-UPLOAD.md`): Bannerlord's own
 `TaleWorlds.MountAndBlade.SteamWorkshop.exe`, riding the logged-in Steam client (start Steam first).
 
 ## Before either upload
