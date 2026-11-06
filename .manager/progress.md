@@ -90,3 +90,5 @@ In-game checks for Toni (step 4): open a unit page (e.g. a culture's recruit), b
   - Settings: `SameCultureBonusEnabled` (on), `SameCultureBonusPoints` (int 0..50, 5), `SameCultureBonusMultiplier` (new `MenuKind.Float`, 1..2, snapped to 0.05, 1.2; MCM AddFloatingInteger, format 0.00). New MCM group "Same culture bonus" at order 1 (later groups shifted; ids unchanged). Log values now printed with "0.###".
   - Module: `Training.Check` passes `target.Culture` (id + name) and each trainer's `Hero.Culture.StringId`; the model, auto-upgrades, party screen buttons / guard / gate and the encyclopedia all use it. Clan tier bypass unchanged (checked first).
   - **Check in game**: a Battanian companion near the threshold unlocks Fian Champions; the hint shows "+N Battanian"; toggle off in MCM -> next button refresh uses raw skills.
+- 2026-11-06 v1.1.0 published: screenshot 7 (culture bonus reasons), GitHub release v1.1.0, Steam item 3834547205 updated
+  ("Uploading done!", change notes + description). Nexus: by hand, Toni.

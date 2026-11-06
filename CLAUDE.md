@@ -8,7 +8,7 @@ Sister mod of `..\item-skill-requirement-expanded` - same layout, tooling, code 
 it does. Status and the agreed design: `.manager\progress.md` (the resume file, committed). Steps 1-4 done: the rule is enforced (model decorator + party screen guard +
 auto-upgrade filter) with an MCM page, and the party screen's upgrade buttons are disabled with the reason in their
 hint (orange when only the rule stops them: `Patches\UpgradeButtonPatch`, `module\GUI\Brushes`); blocked upgrades
-stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, section below). Encyclopedia troop tree: units the main party can't train get an orange frame + reasons in the tooltip (`Patches\EncyclopediaTreePatch`). Step 5 (review, docs, store text drafts in `tools\`) done; v1.0.0 published (Nexus / Steam); v1.1.0 same culture bonus done 2026-11-06. Player docs: `README.md`.
+stop before Troop Equipment Upgrade takes gear (`Patches\UpgradeGatePatch`, section below). Encyclopedia troop tree: units the main party can't train get an orange frame + reasons in the tooltip (`Patches\EncyclopediaTreePatch`). Step 5 (review, docs, store text drafts in `tools\`) done; v1.0.0 published (Nexus / Steam); v1.1.0 same culture bonus done and published 2026-11-06 (GitHub release, Steam update; Nexus by hand). Player docs: `README.md`.
 
 ## Design (agreed with Toni, 2026-11-05)
 
