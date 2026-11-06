@@ -24,6 +24,7 @@ tier, as in vanilla. The rule is only about turning your own recruits into bette
 | ![Party screen](docs/screenshots/01-party-upgrade-blocked.jpg) **1.** A blocked upgrade on the party screen: every short skill and the clan tier that would unlock it. | ![Troop tree](docs/screenshots/02-encyclopedia-tree-orange.jpg) **2.** The encyclopedia troop tree: units your party can't train yet are framed orange. |
 | ![Scout](docs/screenshots/03-encyclopedia-scout-reasons.jpg) **3.** Hover a unit for its reasons. | ![Highborn Warrior](docs/screenshots/04-encyclopedia-highborn-warrior.jpg) **4.** A tier 3 archer: Bow and Two Handed short. |
 | ![Fian Champion](docs/screenshots/05-encyclopedia-fian-champion.jpg) **5.** A tier 6 Fian Champion asks a lot of teaching. | ![Upgrade pop-up](docs/screenshots/06-upgrade-popup.jpg) **6.** The Upgrade Troops pop-up: targets your party can't teach are orange, with the reasons. |
+| ![Same culture bonus](docs/screenshots/07-encyclopedia-culture-bonus.jpg) **7.** v1.1.0: the same culture bonus in the reasons, "your best is 114 (Cadan, +23 Battanian)". | |
 
 ## The rule, with an example
 
