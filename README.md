@@ -8,7 +8,22 @@ companions in your party. Want veteran archers? Learn the bow, or bring someone 
 Recruiting is never blocked. Already-trained troops from towns, villages, prisoners or anywhere else join at any
 tier, as in vanilla. The rule is only about turning your own recruits into better soldiers.
 
-Not released yet: no Nexus or Steam page so far.
+## Install
+
+1. Get it from [Nexus Mods](https://www.nexusmods.com/mountandblade2bannerlord/mods/14536),
+   subscribe on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3834547205),
+   or download the zip from the [GitHub Releases page](https://github.com/TraxData313/troop-training-requirement/releases/latest).
+2. Extract it into `Mount & Blade II Bannerlord\Modules\`.
+3. Enable it in the launcher, below Harmony (and MCM if you use it). Requires
+   [Harmony](https://www.nexusmods.com/mountandblade2bannerlord/mods/2006); [Mod Configuration Menu](https://www.nexusmods.com/mountandblade2bannerlord/mods/612) is optional.
+
+## Screenshots
+
+| | |
+|---|---|
+| ![Party screen](docs/screenshots/01-party-upgrade-blocked.jpg) **1.** A blocked upgrade on the party screen: every short skill and the clan tier that would unlock it. | ![Troop tree](docs/screenshots/02-encyclopedia-tree-orange.jpg) **2.** The encyclopedia troop tree: units your party can't train yet are framed orange. |
+| ![Scout](docs/screenshots/03-encyclopedia-scout-reasons.jpg) **3.** Hover a unit for its reasons. | ![Highborn Warrior](docs/screenshots/04-encyclopedia-highborn-warrior.jpg) **4.** A tier 3 archer: Bow and Two Handed short. |
+| ![Fian Champion](docs/screenshots/05-encyclopedia-fian-champion.jpg) **5.** A tier 6 Fian Champion asks a lot of teaching. | |
 
 ## The rule, with an example
 
@@ -85,7 +100,7 @@ Mod Options > Troop Training Requirement. Changes apply at once. Without MCM the
   troops are earned, a slower and more rewarding progression. The training check always comes first: an upgrade
   your party can't teach is refused before Troop Equipment Upgrade reserves or buys any gear, so you never pay for an
   upgrade that didn't happen. Load order doesn't matter.
-- **Item Skill Requirement Expanded** (the sister mod, same author pair): it makes gear skill requirements soft for
+- **[Item Skill Requirement Expanded](https://www.nexusmods.com/mountandblade2bannerlord/mods/14526)** (the sister mod, same author pair): it makes gear skill requirements soft for
   heroes; this one makes troop upgrades ask for skill. Together your heroes' skills matter twice: for what they can
   wield and for who they can train.
 - Other mods that change the troop upgrade model (War Sails included) are wrapped, not replaced.

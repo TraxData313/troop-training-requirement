@@ -1,18 +1,11 @@
 # Uploading to the Steam Workshop and Nexus Mods
 
-**Nothing has been uploaded yet.** No Steam item, no Nexus page, and the GitHub repo is still private (the links
-in the store texts and README point at it and work only once it is public). Same uploader and quirks as the sister
-mod (`..\item-skill-requirement-expanded\tools\WORKSHOP-UPLOAD.md`): Bannerlord's own
-`TaleWorlds.MountAndBlade.SteamWorkshop.exe`, riding the logged-in Steam client. (Account note: since 2026-10-10 new
-uploads from this account go hidden "awaiting approval" - see `MODS-STATUS.md`, "The Steam block".)
+Published 2026-11-06: Steam item **[3834547205](https://steamcommunity.com/sharedfiles/filedetails/?id=3834547205)** (hidden at once by the
+Steam block, like the other mods since 2026-10-10 - see bannerlord-mods `MODS-STATUS.md`), Nexus
+[mods/14536](https://www.nexusmods.com/mountandblade2bannerlord/mods/14536), GitHub repo public with release v1.0.0.
 
-## Still to do before the first upload
-
-1. Toni's in-game screenshots into `docs\screenshots\` (numbered: `01-...jpg`, 3440x1440 like the sister mod):
-   at least the party screen with an orange blocked button and its tooltip, and an encyclopedia unit tree.
-2. Point `tools\make_thumbnail.py` at them (`FIELD_SHOT` / `POPUP_SHOT` and their boxes) and run it: it writes
-   `docs\thumbnail.jpg`, which `WorkshopCreate.xml` and Nexus need.
-3. README: a Screenshots section and the Install links once the pages exist.
+Same uploader and quirks as the sister mod (`..\item-skill-requirement-expanded	ools\WORKSHOP-UPLOAD.md`): Bannerlord's own
+`TaleWorlds.MountAndBlade.SteamWorkshop.exe`, riding the logged-in Steam client (start Steam first).
 
 ## Before either upload
 
